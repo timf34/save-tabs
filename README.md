@@ -1,56 +1,26 @@
-# Browser Tabs Snapshot
+# save-tabs
 
-Save all open Microsoft Edge tabs to a markdown file. Zero dependencies — just Python 3.7+ and Edge.
+Snapshot all open Microsoft Edge tabs to a markdown file. Zero dependencies — just Python 3.7+.
 
-Works with your currently running Edge browser. No restart, no flags, no setup.
+Works with your currently running browser. No restart, no flags, no setup.
 
 ## Usage
 
 ```bash
-# Save all tabs to snapshots/YYYY-MM-DD.md
-python save_tabs.py
-
-# Print to terminal instead of saving
-python save_tabs.py --stdout
-
-# Output as JSON
-python save_tabs.py --format json --stdout
-
-# Custom output directory
-python save_tabs.py -o my-tabs
+python save_tabs.py                       # Save to snapshots/YYYY-MM-DD.md
+python save_tabs.py --stdout              # Print to terminal
+python save_tabs.py --format json --stdout # Output as JSON
+python save_tabs.py -o my-tabs            # Custom output directory
 ```
 
-Multiple snapshots on the same day get an incrementing suffix: `2026-03-04.md`, `2026-03-04_2.md`, etc.
+Multiple runs on the same day auto-increment: `2026-03-04.md`, `2026-03-04_2.md`, etc.
 
-## Output Example
+## How it works
 
-```markdown
-# Browser Tabs - 2026-03-04 15:30
-
-Captured 172 tabs (75 in 11 groups, 97 ungrouped) at 2026-03-04 15:30:05
-
-## AI
-
-- [Some Paper Title](https://arxiv.org/abs/1234.56789)
-- [Blog Post](https://example.com/post)
-
-## career
-
-- [Job Board](https://example.com/jobs)
-
-## Ungrouped
-
-- [GitHub](https://github.com)
-- [Todoist](https://app.todoist.com/app/today)
-```
-
-## How It Works
-
-**Tab groups** are read from Edge's `Preferences` file — a JSON file that Edge keeps updated in real time while running. This gives 100% accurate, live tab group data.
-
-**Ungrouped tabs** are parsed from Edge's most recent readable SNSS session file (binary format in the `Sessions/` directory). Edge keeps the active session file locked, so the script reads the previous session's file. This means ungrouped tabs reflect the state from when Edge was last restarted — tabs opened since then won't appear, but old tabs you haven't touched will be there.
+- **Tab groups** — read from Edge's `Preferences` JSON file, which is updated live while Edge runs. Always current.
+- **Ungrouped tabs** — parsed from the most recent unlocked SNSS session file in `Sessions/`. These reflect the state from the previous session, so tabs opened since the last restart won't appear.
 
 ## Limitations
 
-- **Ungrouped tabs may be slightly stale** — they come from the previous session file, not the live session. Grouped tabs are always current.
-- **Windows only** — uses the Windows Edge profile path.
+- **Ungrouped tabs may be slightly stale** — from the previous session file, not the live one.
+- **Windows only** — reads from `%LOCALAPPDATA%\Microsoft\Edge\User Data\`.
